@@ -105,6 +105,31 @@ describe('A use case', () => {
             })
         })
 
+        context('returning buchu common error', () => {
+
+            const givenTheSimplestUseCaseWithError = () => {
+                const uc = usecase('A use case', {
+                    'A misstep': step(() => { return Err.notFound(Err.notFound({ message: 'message', payload: { entity: 'user' }, cause: {foo: 'bar'} }),) })
+                })
+                return uc
+            }
+
+            it('should run', async () => {
+                //given
+                const uc = givenTheSimplestUseCaseWithError()
+                //when
+                const ret = await uc.run()
+                //then
+                assert.ok(ret.isErr)
+                assert.notDeepStrictEqual(ret.err, {
+                    payload: { entity: 'user' },
+                    cause: {foo: 'bar'},
+                    code: 'NOT_FOUND',
+                    message: 'message'
+                  })
+            })
+        })
+
         it('should not run more than once', async () => {
             //given
             const uc = givenTheSimplestUseCase()

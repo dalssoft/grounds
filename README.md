@@ -6,6 +6,26 @@
 
 Uniform, auditable and secure use case javascript library. Influenced by Clean Architecture and Trailblazer
 
+
+## index
+
+- [Installing](#installing)
+- [Using](#using)
+- [Motivations](#motivations)
+    - [Maintainability](#maintainability)
+    - [Metadata for system intent](#metadata-for-system-intent)
+    - [Auditable and Secure](#auditable-and-ecure)
+- [Audit](#audit)
+- [Request Validation](#request-validation)
+- [Use Case](#use-case)
+    - [What is it?](#what-is-it?)
+    - [Best-pratices](#best-pratices)
+- [Errors](#errors)
+- [Contribute](#contribute)
+- [The Herb](#the-herb)
+- [License](#license)
+
+
 ### Installing
 ``` $ npm install @herbsjs/buchu ```
 
@@ -112,6 +132,22 @@ app.put('/items/:item', function (req, res) {
   ]
 }
 ```
+### Motivations
+
+#### Maintainability
+
+"Programs must be written for people to read, and only incidentally for machines to execute" - Harold Abelson, Structure and Interpretation of Computer Programs
+
+Understanding what a software is doing from a business perspective is a must in order to be able to change it quickly and in a sustainable way.
+
+#### Metadata for system intent
+
+It should be easy to retrieve a system's metadata for all its use cases and steps. This info could be used to leverage innovative interfaces (ex: dynamic admin pages, use case documentations, etc), helping narrow the gap between developers, testers and product managers.
+
+#### Auditable and Secure
+
+It should be easy to have enterprise grade features even for simple applications. Authorization and auditing, for instance, should be available out of the box. Not using should be opt-in.
+
 ### Audit
 
 It is possible to retrieve the audit trail of an use case after its execution
@@ -142,6 +178,7 @@ It is possible to retrieve the audit trail of an use case after its execution
 }
 ```
 TIP: If you need to audit the exceptions thrown by the use case use `process.env.HERBS_EXCEPTION = "audit"`. This will swallow the exceptions and return a Err on the step. Recommended for production environments.
+
 
 ### Request Validation
 
@@ -174,22 +211,6 @@ A field in a request can be basic types from Javascript or entities created from
 `Array`: the Array class is a object that is used in the construction of arrays.
 
 `Entity`: entity object represents an gotu base entity.
-
-### Motivations
-
-#### Maintainability
-
-"Programs must be written for people to read, and only incidentally for machines to execute" - Harold Abelson, Structure and Interpretation of Computer Programs
-
-Understanding what a software is doing from a business perspective is a must in order to be able to change it quickly and in a sustainable way.
-
-#### Metadata for system intent
-
-It should be easy to retrieve a system's metadata for all its use cases and steps. This info could be used to leverage innovative interfaces (ex: dynamic admin pages, use case documentations, etc), helping narrow the gap between developers, testers and product managers.
-
-#### Auditable and Secure
-
-It should be easy to have enterprise grade features even for simple applications. Authorization and auditing, for instance, should be available out of the box. Not using should be opt-in.
 
 ### Use Case
 
@@ -239,6 +260,26 @@ References:
 - Use Case 2.0 [link](https://www.ivarjacobson.com/sites/default/files/field_iji_file/article/use-case_2.0_final_rev3.pdf)
 - Use Case diagram [link](http://www.agilemodeling.com/artifacts/useCaseDiagram.htm)
 - Service Layer [link](https://martinfowler.com/eaaCatalog/serviceLayer.html)
+
+### Errors
+
+As you noted into [example](#using) session you can return an Err object, this class can be an generic Err as can be a structured Err too
+
+``` js 
+const options = { message: 'message', payload: { entity: 'user' }, cause: Err("my message") || new Error() }
+Err.notFound(options),
+Err.alreadyExists(options),
+Err.invalidEntity(options),
+Err.invalidArguments({ ...options, args: { name: 'cant be empty' }}),
+Err.permissionDenied(options),
+Err.unknown(options),
+Err.buildCustomErr(options),
+```
+or you can create your own structured Err
+
+``` js
+Err._buildCustomErr('ERROR_CODE', message, payload, cause)
+```
 
 ### To Do
 

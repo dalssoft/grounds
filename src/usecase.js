@@ -1,7 +1,7 @@
 const { step } = require('./step')
+const { Err } = require('./results')
 const { schema } = require('./schema')
 const { v4: uuidv4 } = require('uuid')
-const { Err } = require('./results')
 
 class UseCase {
 
